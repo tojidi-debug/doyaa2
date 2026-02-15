@@ -7,71 +7,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <style>
-    /* 전체 레이아웃 */
+    /* 1. 기본 레이아웃 및 우주 배경 애니메이션 (home.html 디자인 유지) */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
     body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Pretendard', sans-serif; background: #0a0e27; }
 
     @keyframes starfield { 0% { transform: translateY(0); } 100% { transform: translateY(-2000px); } }
     @keyframes nebula { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
-    @keyframes shootingStar { 0% { transform: translateX(0) translateY(0); opacity: 1; } 100% { transform: translateX(300px) translateY(200px); opacity: 0; } }
 
-    .wrapper { width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; background: radial-gradient(ellipse at top, #1a237e 0%, #0a0e27 50%), radial-gradient(ellipse at bottom, #0d1b3e 0%, #000000 100%); overflow: hidden; }
+    .wrapper { 
+      width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; 
+      background: radial-gradient(ellipse at top, #1a237e 0%, #0a0e27 50%), radial-gradient(ellipse at bottom, #0d1b3e 0%, #000000 100%); 
+    }
     .space-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: 200% 200%; animation: starfield 200s linear infinite; opacity: 0.6; pointer-events: none; }
 
-    /* 헤더 디자인 */
+    /* 2. 헤더 디자인 (숨김 애니메이션 추가) */
     header {
-      background: rgba(13, 27, 62, 0.4);
-      backdrop-filter: blur(15px);
-      height: 60px;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      border-bottom: 1px solid rgba(28, 181, 224, 0.2);
-      transition: transform 0.4s ease, opacity 0.4s ease;
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAB4CAIAAACcpnhrAABOy0lEQVR4nO2dd5zU1PrGnyh1C2Vt1CtL2VU67C6LDQWuXaQKKKg0sSBgQZoCoggsogiIFGkqSJGmKBdERLCxbKGrLCh4VdSfykVAiv6R3x/Znc3MZDIpJzknyftlPyE7kzl58+bk7MyTZ94jXVy5pQwReXvlJAD3dB/FOQ6J8/5FR4KY/ccaI57tnvPsSlMvSU5OBNCgQR0AGRlNAGRlNVGe6trtloiNV6/eCCAvbx+AgoJ9AA4dOgrg1Km/LEQrAYBkqodKonXo4vAtRiX7qvdFUZwb5aSpTl3pr8zOJ5NMygAgu3lKZF7d2YFToIGMkjNj4PyoN47N1InDh42eUvyLO0chNkqnhWwpDzo598fIFKheYepyUxD+/c8HK6cBuL3743x2z7v/LJg1of+gZzgHoYMkCdJ/lPexafUuB5DZsjGA7Izi97HdOt4c2mzVu5tC67kF+wDkF+4HUPTt97D6PlYP3v1HdIQff/R5anBfAAN6dUxOTp42Z4ny4IszFzHbAfUffQyPPxvefBHAbfc95Wg4whH4/rN99WwAbbo+rP20x8cfxwl8/9FHuqhSCzE70LJ3JgO4+66RnOOgDqSPjwagkeN7KCuTx61g1ebx/xVGPJKS0tJ+swalZ5FVJcmKfq6NrPObRwlJz6VL9VOOiIZy1Kq1VLoqQ7s8/kgoufjg0uVlVhSLJ0NPnTRi2KgcX0nPUsxfdLcEwPQWlhzjlzg7ML4lD7zeN3T58ZstAGpd0T7sUdUVtHrVZABdu8Z+F+qj9z+OwLX/nDyWD6BSjUyeQegjjACtz6mf8gAk18xye8e+Hn8Y4JfxZ/jgflNmLmTfLvUffQyPP/95ayqAW+8dFnfLTUtfBnBzrydsBSYIge8/n66ZA+C6Lg9pP+2X8ccpAt9/9CnDO4CY8JeeiYAxedyKkeN7WFafw6zQmU0BZGU1WbVqY3Z209q1a4Q2mzdvYmi9xAq9F/as0AFHGeTpD6FNJA/mMG7Aa5dMBtC5N/01KebGtq6LCNyJfBeoGjAYjh2hvchau2C1F4IgDKCoz8qK0Bq0F0iumbVw1gTeURAEwQcj0jPhP2JKz7H5/cAnAC5udAPzYPzNxsVTAdzSJ0AXmhAC9CefvQHghmvv5x0IEXTseJ8V7biw8ICy/OnY5wBq1rxm3ryJzZrdcfx4IRjZnwlNSIa2jxc1aCIuUyeNUFZubJuVkpKyZ8eqzVvzAEDCsNEv8ozMaaLN0VL4r0p3l5jW8lHvQv1dAhqhBCPS+xyFnveZEIDiwhH16yCqcISaha+ViqdhhSMOHwXd9ScIgmCET7zPBEE4jBACNEH4npSUlmrvs9OI/L16R2NTGvdFbWhX62+o9yr7SCpzxPvsZuUKCZAlSHLJ0sz2JVsPG5UTen7PjlXNWncL60g+QYr4P+zxWEdZ3NON5dZ6UColWh1JuFc6Z3L/ESMXOBAEQfgTRTsu2HUgtJy7YAWAd5e+uHXr1rZt20LwEhwEQQCO1N8gCMJ1yPtsDc95n3/btxXAJU3aWm7hAnbBWOeGa+8n+zPhM2rWuKZmjWucaDlu7eTAqs8u78UpQuKgrQka7e0fsFyfm1ltb9HwSt3k0v6jEeXmrXmeOZC4FB+jVKoyS6VPAFLxBJ4GiuU7ngpJHW34gwAg5UzuDwk5Of2dDEIU9u9YvX/Hat5RxMA3V4cBHhrQk3cIDlKpRuaqdRt5R8GHnR+9ufOjN3lHQRAEQRAEEQk5oAnCWZRCz+4g+CdmN8Pzj4lXxX+PfALgX3Wt33I0SEn2JMm16QQFRy1ICX2RBQAp7L/IOhuWb5vIrtSgiXRAFz8_V');
+      background-size: cover; height: 60px; display: flex; align-items: center; padding: 0 24px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); z-index: 100;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
     }
-    header.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; height: 0; }
+    header.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
-    /* 로고 영역 */
+    /* 3. 로고 및 네비게이션 스타일 */
     .logo-section { display: flex; align-items: center; gap: 10px; margin-right: 24px; cursor: pointer; }
-    .logo-text-area { color: white; font-weight: 800; font-size: 14px; line-height: 1.2; text-shadow: 0 0 10px rgba(28, 181, 224, 0.8); }
+    .logo-text { color: white; font-weight: 800; font-size: 14px; text-shadow: 0 0 10px rgba(28, 181, 224, 0.8); }
 
-    /* 네비게이션 */
-    .nav-area { display: flex; gap: 9px; flex: 1; align-items: center; overflow-x: auto; }
+    .nav-area { display: flex; gap: 10px; flex: 1; align-items: center; overflow-x: auto; }
     .nav-btn {
-      border: 1px solid rgba(28, 181, 224, 0.3);
-      border-radius: 10px; color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 14px; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.3s;
+      border: 1px solid rgba(28, 181, 224, 0.3); border-radius: 10px; color: #ffffff;
+      background: rgba(255, 255, 255, 0.05); padding: 8px 14px; cursor: pointer;
+      font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.3s;
     }
     .nav-btn:hover, .nav-btn.active { background: rgba(28, 181, 224, 0.3); border-color: rgba(28, 181, 224, 0.8); }
 
-    /* [수정] Han_AI 버튼 - 강렬한 빨간색 스타일 */
-    .ai-btn {
-      background: linear-gradient(135deg, rgba(255, 59, 59, 0.3), rgba(151, 0, 0, 0.4)) !important;
-      border: 1px solid rgba(255, 82, 82, 0.7) !important;
-      color: #ffcccc !important;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    /* 4. Han_AI 버튼 특별 스타일 (흰색+그레이 바탕, 네이비 글씨) */
+    .btn-han-ai {
+      background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%) !important;
+      color: #000080 !important;
+      border: 1px solid #ffffff !important;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
-    .ai-btn:hover {
-      background: rgba(255, 0, 0, 0.5) !important;
-      box-shadow: 0 0 25px rgba(255, 0, 0, 0.6) !important;
-      color: #fff !important;
+    .btn-han-ai:hover {
+      background: #ffffff !important;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+      transform: scale(1.05);
     }
 
-    /* 콘텐츠 영역 */
-    .content-wrapper { flex: 1; background: #fff; z-index: 10; position: relative; transition: height 0.4s ease; }
-    .content-wrapper.full { height: 100vh; }
+    /* 5. 콘텐츠 영역 및 알림창 */
+    .content-wrapper { flex: 1; background: #fff; z-index: 10; position: relative; }
     #content-frame { width: 100%; height: 100%; border: none; }
 
-    /* 전체화면 해제용 플로팅 버튼 (로고 클릭과 동일 기능) */
-    #exit-full { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000; padding: 10px; background: rgba(0,0,0,0.5); color: white; border-radius: 50%; cursor: pointer; font-size: 12px; }
-
-    /* 알림창 */
     #custom-alert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-    .modal-content { background: #0d1b3e; padding: 30px; border-radius: 16px; text-align: center; color: #fff; border: 1px solid #1CB5E0; }
-    .modal-btn { background: #1CB5E0; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+    .modal-content { background: #0a0e27; padding: 30px; border-radius: 12px; text-align: center; color: #fff; border: 1px solid #1CB5E0; }
+    .modal-btn { background: #1CB5E0; color: #fff; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; margin-top: 15px; }
   </style>
 </head>
 <body oncontextmenu="return false">
@@ -80,39 +69,36 @@
     <div class="space-bg"></div>
 
     <header id="main-header">
-      <div class="logo-section" onclick="resetView()">
-        <div class="logo-text-area">
-          <div>한에스</div>
-          <div>시스템</div>
-        </div>
+      <div class="logo-section" onclick="resetPage()">
+        <div class="logo-text">한에스시스템 [V1.0]</div>
       </div>
       
       <div class="nav-area">
         <button class="nav-btn" onclick="goLink('new', 'https://gemini.google.com/share/b4ec0333e73c', this)">진행사항 ↗</button>
-        <button id="btn-default" class="nav-btn" onclick="goLink('frame', 'https://script.google.com/macros/s/AKfycbzU6UBeYWfO9_SbvmyM69S6LTznRRgc4y5gNgXgP795_XaEDvOYnRYnby7T0U_5v-4bDQ/exec', this)">휴폐업조회</button>
+        <button class="nav-btn" onclick="goLink('frame', 'https://script.google.com/macros/s/AKfycbzU6UBeYWfO9_SbvmyM69S6LTznRRgc4y5gNgXgP795_XaEDvOYnRYnby7T0U_5v-4bDQ/exec', this)">휴폐업조회</button>
         <button class="nav-btn" onclick="goLink('frame', 'https://scourt.gensolsoft.com/', this)">대법원 사건검색</button>
-        <button class="nav-btn" onclick="goLink('frame', 'https://drive.google.com/embeddedfolderview?id=1LF7_GJj1xmGPkAGilQZKIQ0B0GnaWRJO#grid', this)">포토로그</button>
+        <button id="btn-photo" class="nav-btn" onclick="goLink('frame', 'https://drive.google.com/embeddedfolderview?id=1LF7_GJj1xmGPkAGilQZKIQ0B0GnaWRJO#grid', this)">포토로그</button>
         <button class="nav-btn" onclick="goLink('frame', 'https://tojidi-debug.github.io/doyaa3/index.html', this)">프롬프트 추천</button>
         
-        <button class="nav-btn ai-btn" onclick="goAI('https://tojidi-debug.github.io/doyaa/ai_index.html', this)">Han_AI</button>
+        <button class="nav-btn btn-han-ai" onclick="goFullScreen('https://tojidi-debug.github.io/doyaa/ai_index.html', this)">Han_AI</button>
       </div>
     </header>
 
-    <div class="content-wrapper" id="main-wrapper">
+    <div class="content-wrapper">
       <iframe id="content-frame" src="about:blank"></iframe>
     </div>
   </div>
 
   <div id="custom-alert">
     <div class="modal-content">
-      <h3 style="color:#1CB5E0">시스템 알림</h3><br>
+      <h3>시스템 알림</h3><br>
       <p id="modal-text"></p>
       <button class="modal-btn" onclick="closeAlert()">확인</button>
     </div>
   </div>
 
   <script>
-    function resetView() {
+    function resetPage() {
       location.reload();
     }
 
@@ -125,13 +111,11 @@
       document.getElementById('custom-alert').style.display = 'none';
     }
 
-    // 일반 링크 이동 (헤더 유지)
+    // 일반 페이지 전환 (헤더 보임)
     function goLink(type, url, el) {
       document.getElementById('main-header').classList.remove('hidden');
-      document.getElementById('main-wrapper').classList.remove('full');
-      
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      el.classList.add('active');
+      if(el) el.classList.add('active');
 
       if (type === 'new') {
         window.open(url, '_blank');
@@ -140,28 +124,27 @@
       }
     }
 
-    // [핵심] Han_AI 전용 전체 화면 모드 실행
-    function goAI(url, el) {
+    // [핵심] Han_AI 전용 전체 화면 전환 함수
+    function goFullScreen(url, el) {
+      // 1. 헤더 숨기기
+      document.getElementById('main-header').classList.add('hidden');
+      // 2. 버튼 활성화 표시
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
-
-      // 헤더 숨기기 및 프레임 확장
-      document.getElementById('main-header').classList.add('hidden');
-      document.getElementById('main-wrapper').classList.add('full');
-      
-      // 주소 로드
+      // 3. Iframe 로드
       document.getElementById('content-frame').src = url;
     }
 
-    // 보안: 우클릭 방지
+    // 마우스 오른쪽 클릭 금지
     document.addEventListener('contextmenu', e => {
       e.preventDefault();
       showAlert('보안을 위해 우클릭이 제한됩니다.');
     });
 
     window.onload = function() {
-      const defaultBtn = document.getElementById('btn-default');
-      if (defaultBtn) defaultBtn.click();
+      // 첫 접속 시 '포토로그' 자동 클릭 (구글 드라이브 표시)
+      const photoBtn = document.getElementById('btn-photo');
+      if (photoBtn) photoBtn.click();
     };
   </script>
 
