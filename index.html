@@ -7,6 +7,618 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <style>
+    /* 전체 레이아웃 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Pretendard', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0e27;
+    }
+
+    /* 우주 배경 애니메이션 */
+    @keyframes starfield {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-2000px); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes nebula {
+      0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.6; transform: scale(1.1) rotate(5deg); }
+    }
+
+    @keyframes cosmicDust {
+      0% { transform: translateX(-100%) translateY(-100%); opacity: 0; }
+      50% { opacity: 0.3; }
+      100% { transform: translateX(100%) translateY(100%); opacity: 0; }
+    }
+
+    @keyframes shootingStar {
+      0% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(300px) translateY(200px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes aiPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(28, 181, 224, 0.3); }
+      50% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(28, 181, 224, 0.5); }
+    }
+
+    /* 메인 컨테이너 */
+    .wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: 
+        radial-gradient(ellipse at top, #1a237e 0%, #0a0e27 50%),
+        radial-gradient(ellipse at bottom, #0d1b3e 0%, #000000 100%);
+      overflow: hidden;
+    }
+
+    /* 우주 배경 레이어 */
+    .space-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 50%, white, transparent),
+        radial-gradient(2px 2px at 79% 53%, white, transparent),
+        radial-gradient(1px 1px at 17% 93%, white, transparent),
+        radial-gradient(2px 2px at 26% 75%, white, transparent),
+        radial-gradient(1.5px 1.5px at 45% 15%, white, transparent);
+      background-size: 200% 200%;
+      animation: starfield 200s linear infinite;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* 성운 효과 강화 */
+    .space-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(28, 181, 224, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(91, 134, 229, 0.15) 0%, transparent 60%);
+      animation: nebula 15s ease-in-out infinite;
+    }
+
+    /* 우주 먼지 레이어 */
+    .space-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, transparent 40%, rgba(138, 43, 226, 0.05) 50%, transparent 60%),
+        linear-gradient(-45deg, transparent 40%, rgba(28, 181, 224, 0.05) 50%, transparent 60%);
+      background-size: 200% 200%;
+      animation: cosmicDust 30s linear infinite;
+    }
+
+    /* 반짝이는 별 효과 */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    /* 유성 효과 */
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.8);
+      animation: shootingStar 2s ease-out;
+    }
+
+    /* 상단 헤더 - 은하수 배경 이미지 */
+    header {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAB4CAIAAACcpnhrAABOy0lEQVR4nO2dd5zU1PrGnyh1C2Vt1CtL2VU67C6LDQWuXaQKKKg0sSBgQZoCoggsogiIFGkqSJGmKBdERLCxbKGrLCh4VdSfykVAiv6R3x/Znc3MZDIpJzknyftlPyE7kzl58+bk7MyTZ94jXVy5pQwReXvlJAD3dB/FOQ6J8/5FR4KY/ccaI57tnvPsSlMvSU5OBNCgQR0AGRlNAGRlNVGe6trtloiNV6/eCCAvbx+AgoJ9AA4dOgrg1Km/LEQrAYBkqodKonXo4vAtRiX7qvdFUZwb5aSpTl3pr8zOJ5NMygAgu3lKZF7d2YFToIGMkjNj4PyoN47N1InDh42eUvyLO0chNkqnhWwpDzo598fIFKheYepyUxD+/c8HK6cBuL3743x2z7v/LJg1of+gZzgHoYMkCdJ/lPexafUuB5DZsjGA7Izi97HdOt4c2mzVu5tC67kF+wDkF+4HUPTt97D6PlYP3v1HdIQff/R5anBfAAN6dUxOTp42Z4ny4IszFzHbAfUffQyPPxvefBHAbfc95Wg4whH4/rN99WwAbbo+rP20x8cfxwl8/9FHuqhSCzE70LJ3JgO4+66RnOOgDqSPjwagkeN7KCuTx61g1ebx/xVGPJKS0tJ+swalZ5FVJcmKfq6NrPObRwlJz6VL9VOOiIZy1Kq1VLoqQ7s8/kgoufjg0uVlVhSLJ0NPnTRi2KgcX0nPUsxfdLcEwPQWlhzjlzg7ML4lD7zeN3T58ZstAGpd0T7sUdUVtHrVZABdu8Z+F+qj9z+OwLX/nDyWD6BSjUyeQegjjACtz6mf8gAk18xye8e+Hn8Y4JfxZ/jgflNmLmTfLvUffQyPP/95ayqAW+8dFnfLTUtfBnBzrydsBSYIge8/n66ZA+C6Lg9pP+2X8ccpAt9/9CnDO4CY8JeeiYAxedyKkeN7WFafw6zQmU0BZGU1WbVqY3Z209q1a4Q2mzdvYmi9xAq9F/as0AFHGeTpD6FNJA/mMG7Aa5dMBtC5N/01KebGtq6LCNyJfBeoGjAYjh2hvchau2C1F4IgDKCoz8qK0Bq0F0iumbVw1gTeURAEwQcj0jPhP2JKz7H5/cAnAC5udAPzYPzNxsVTAdzSJ0AXmhAC9CefvQHghmvv5x0IEXTseJ8V7biw8ICy/OnY5wBq1rxm3ryJzZrdcfx4IRjZnwlNSIa2jxc1aCIuUyeNUFZubJuVkpKyZ8eqzVvzAEDCsNEv8ozMaaLN0VL4r0p3l5jW8lHvQv1dAhqhBCPS+xyFnveZEIDiwhH16yCqcISaha+ViqdhhSMOHwXd9ScIgmCET7zPBEE4jBACNEH4npSUlmrvs9OI/L16R2NTGvdFbWhX62+o9yr7SCpzxPvsZuUKCZAlSHLJ0sz2JVsPG5UTen7PjlXNWncL60g+QYr4P+zxWEdZ3NON5dZ6UColWh1JuFc6Z3L/ESMXOBAEQfgTRTsu2HUgtJy7YAWAd5e+uHXr1rZt20LwEhwEQQCO1N8gCMJ1yPtsDc95n3/btxXAJU3aWm7hAnbBWOeGa+8n+zPhM2rWuKZmjWucaDlu7eTAqs8u78UpQuKgrQka7e0fsFyfm1ltb9HwSt3k0v6jEeXmrXmeOZC4FB+jVKoyS6VPAFLxBJ4GiuU7ngpJHW34gwAg5UzuDwk5Of2dDEIU9u9YvX/Hat5RxMA3V4cBHhrQk3cIDlKpRuaqdRt5R8GHnR+9ufOjN3lHQRAEQRAEEQk5oAnCWZRCz+4g+CdmN8Pzj4lXxX+PfALgX3Wt33I0SEn2JMm16QQFRy1ICX2RBQAp7L/IOhuWb5vIrtSgiXRAFz8_V');
+      background-size: cover;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      box-shadow: 
+        0 4px 30px rgba(0, 0, 0, 0.5),
+        inset 0 -1px 0 rgba(28, 181, 224, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 100;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    }
+
+    header.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 로고 섹션 스타일 */
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 24px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-section:hover {
+      transform: scale(1.05);
+    }
+
+    .galaxy-icon-wrapper {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .galaxy-icon {
+      width: 24px;
+      height: 24px;
+      fill: #1CB5E0;
+      filter: drop-shadow(0 0 8px rgba(28, 181, 224, 0.8));
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .logo-text-area {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.2;
+    }
+
+    .logo-line1, .logo-line2 {
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      text-shadow: 0 0 10px rgba(28, 181, 224, 0.8);
+    }
+
+    .logo-version {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 9px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* 네비게이션 영역 */
+    .nav-area {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-area::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 일반 버튼 스타일 */
+    .nav-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(28, 181, 224, 0.3);
+      border-radius: 10px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-btn:hover {
+      background: rgba(28, 181, 224, 0.3);
+      border-color: rgba(28, 181, 224, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(28, 181, 224, 0.4);
+    }
+
+    .nav-btn.active {
+      background: rgba(28, 181, 224, 0.3);
+      border-color: rgba(28, 181, 224, 0.8);
+      box-shadow: 0 0 20px rgba(28, 181, 224, 0.5);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .btn-text {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Han_AI 버튼 특별 스타일 */
+    .btn-han-ai {
+      background: linear-gradient(135deg, #ffffff 0%, #e8f4f8 50%, #d0e9f2 100%) !important;
+      color: #0a0e27 !important;
+      border: 2px solid #1CB5E0 !important;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+      animation: aiPulse 2s ease-in-out infinite;
+    }
+
+    .btn-han-ai::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(28, 181, 224, 0.3) 50%,
+        transparent 70%
+      );
+      animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .btn-han-ai:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #d0e9f2 50%, #1CB5E0 100%) !important;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 0 30px rgba(28, 181, 224, 0.8), 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-han-ai .btn-icon {
+      fill: #1CB5E0;
+      filter: drop-shadow(0 0 3px rgba(28, 181, 224, 0.5));
+    }
+
+    .btn-han-ai .btn-text {
+      color: #0a0e27;
+      font-weight: 700;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    }
+
+    /* 콘텐츠 영역 */
+    .content-wrapper {
+      flex: 1;
+      background: #fff;
+      z-index: 10;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #content-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* 커스텀 알림창 */
+    #custom-alert {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #0a0e27 0%, #1a237e 100%);
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      color: #fff;
+      border: 2px solid #1CB5E0;
+      box-shadow: 0 0 40px rgba(28, 181, 224, 0.5);
+      max-width: 400px;
+      min-width: 300px;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-icon {
+      width: 24px;
+      height: 24px;
+      fill: #1CB5E0;
+    }
+
+    .modal-message {
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .modal-btn {
+      background: linear-gradient(135deg, #1CB5E0 0%, #0d8ab5 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(28, 181, 224, 0.3);
+    }
+
+    .modal-btn:hover {
+      background: linear-gradient(135deg, #0d8ab5 0%, #1CB5E0 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(28, 181, 224, 0.5);
+    }
+  </style>
+</head>
+<body oncontextmenu="return false">
+
+  <div class="wrapper">
+    <div class="space-bg"></div>
+
+    <header id="main-header">
+      <div class="logo-section" onclick="resetPage()">
+        <div class="galaxy-icon-wrapper">
+          <svg class="galaxy-icon" viewBox="0 0 24 24">
+            <path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M12 6l1.5 4.5L18 12l-4.5 1.5L12 18l-1.5-4.5L6 12l4.5-1.5z" opacity="0.5"/>
+          </svg>
+        </div>
+        
+        <div class="logo-text-area">
+          <div class="logo-line1">한에스</div>
+          <div class="logo-line2">시스템</div>
+          <div class="logo-version">[V1.0]</div>
+        </div>
+      </div>
+      
+      <div class="nav-area">
+        <button class="nav-btn" onclick="goLink('new', 'https://gemini.google.com/share/b4ec0333e73c', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+          </svg>
+          <span class="btn-text">진행사항 ↗</span>
+        </button>
+        
+        <button class="nav-btn" onclick="goLink('frame', 'https://script.google.com/macros/s/AKfycbzU6UBeYWfO9_SbvmyM69S6LTznRRgc4y5gNgXgP795_XaEDvOYnRYnby7T0U_5v-4bDQ/exec', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <span class="btn-text">휴폐업조회</span>
+        </button>
+        
+        <button class="nav-btn" onclick="goLink('frame', 'https://scourt.gensolsoft.com/', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+          </svg>
+          <span class="btn-text">대법원 사건검색</span>
+        </button>
+        
+        <button id="btn-photo" class="nav-btn" onclick="goLink('frame', 'https://drive.google.com/embeddedfolderview?id=1LF7_GJj1xmGPkAGilQZKIQ0B0GnaWRJO#grid', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+          </svg>
+          <span class="btn-text">포토로그</span>
+        </button>
+
+        <button class="nav-btn" onclick="goLink('frame', 'https://tojidi-debug.github.io/doyaa3/index.html', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.93 12.37 7 10.78 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.78-.93 3.37-2.15 4.1z"/>
+          </svg>
+          <span class="btn-text">프롬프트 추천</span>
+        </button>
+
+        <button class="nav-btn btn-han-ai" onclick="goFullScreen('https://tojidi-debug.github.io/doyaa/ai_index.html', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24">
+            <path d="M20,18c1.1,0,2-0.9,2-2V6c0-1.1-0.9-2-2-2H4C2.9,4,2,4.9,2,6v10c0,1.1,0.9,2,2,2H0v2h24v-2H20z M4,6h16v10H4V6z"/>
+            <circle cx="12" cy="11" r="2"/>
+            <path d="M15,11c0-0.55-0.45-1-1-1h-1V9c0-0.55-0.45-1-1-1s-1,0.45-1,1v1H10c-0.55,0-1,0.45-1,1s0.45,1,1,1h1v1c0,0.55,0.45,1,1,1s1-0.45,1-1v-1h1C14.55,12,15,11.55,15,11z"/>
+          </svg>
+          <span class="btn-text">Han_AI</span>
+        </button>
+      </div>
+      
+    </header>
+
+    <div class="content-wrapper">
+      <iframe id="content-frame" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <div id="custom-alert">
+    <div class="modal-content">
+      <div class="modal-title">
+        <svg class="modal-icon" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>시스템 알림</span>
+      </div>
+      <div id="modal-text" class="modal-message"></div>
+      <button class="modal-btn" onclick="closeAlert()">확인</button>
+    </div>
+  </div>
+
+  <script>
+    // 페이지 새로고침
+    function resetPage() {
+      location.reload();
+    }
+
+    // 알림창 표시
+    function showAlert(message) {
+      document.getElementById('modal-text').innerText = message;
+      document.getElementById('custom-alert').style.display = 'flex';
+    }
+
+    // 알림창 닫기
+    function closeAlert() {
+      document.getElementById('custom-alert').style.display = 'none';
+    }
+
+    // 일반 페이지 전환 (헤더 보임)
+    function goLink(type, url, el) {
+      document.getElementById('main-header').classList.remove('hidden');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      if(el) el.classList.add('active');
+
+      if (type === 'new') {
+        window.open(url, '_blank');
+      } else {
+        document.getElementById('content-frame').src = url;
+      }
+    }
+
+    // Han_AI 전용 전체 화면 전환 함수
+    function goFullScreen(url, el) {
+      // 1. 헤더 숨기기
+      document.getElementById('main-header').classList.add('hidden');
+      // 2. 버튼 활성화 표시
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      // 3. Iframe 로드
+      document.getElementById('content-frame').src = url;
+    }
+
+    // 마우스 우클릭 금지
+    document.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      showAlert('보안을 위해 우클릭이 제한됩니다.');
+    });
+
+    // 페이지 로드 시 실행
+    window.onload = function() {
+      // 첫 접속 시 '포토로그' 자동 클릭
+      const photoBtn = document.getElementById('btn-photo');
+      if (photoBtn) photoBtn.click();
+      
+      // 별과 유성 생성
+      createStars();
+      createShootingStars();
+    };
+
+    // 반짝이는 별 생성
+    function createStars() {
+      const starsContainer = document.createElement('div');
+      starsContainer.className = 'stars';
+      document.querySelector('.wrapper').appendChild(starsContainer);
+      
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (2 + Math.random() * 2) + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // 유성 생성
+    function createShootingStars() {
+      setInterval(() => {
+        if (Math.random() > 0.7) {
+          const star = document.createElement('div');
+          star.className = 'shooting-star';
+          star.style.left = (Math.random() * 50 + 10) + '%';
+          star.style.top = (Math.random() * 30 + 10) + '%';
+          document.querySelector('.wrapper').appendChild(star);
+          
+          setTimeout(() => star.remove(), 2000);
+        }
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ko">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <title>한에스시스템(V1.0)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <style>
     /* 1. home.html 기반 핵심 디자인 및 애니메이션 */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
     body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Pretendard', sans-serif; background: #0a0e27; }
