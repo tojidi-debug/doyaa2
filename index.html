@@ -7,12 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <style>
-    /* 1. 기본 레이아웃 및 우주 배경 애니메이션 (home.html 디자인 유지) */
+    /* 1. home.html 기반 핵심 디자인 및 애니메이션 */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
     body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Pretendard', sans-serif; background: #0a0e27; }
 
     @keyframes starfield { 0% { transform: translateY(0); } 100% { transform: translateY(-2000px); } }
     @keyframes nebula { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+    @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
     .wrapper { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; 
@@ -20,47 +21,50 @@
     }
     .space-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: 200% 200%; animation: starfield 200s linear infinite; opacity: 0.6; pointer-events: none; }
 
-    /* 2. 헤더 디자인 (숨김 애니메이션 추가) */
+    /* 2. home.html 스타일 헤더 (home1.html의 숨김 로직 포함) */
     header {
-      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAB4CAIAAACcpnhrAABOy0lEQVR4nO2dd5zU1PrGnyh1C2Vt1CtL2VU67C6LDQWuXaQKKKg0sSBgQZoCoggsogiIFGkqSJGmKBdERLCxbKGrLCh4VdSfykVAiv6R3x/Znc3MZDIpJzknyftlPyE7kzl58+bk7MyTZ94jXVy5pQwReXvlJAD3dB/FOQ6J8/5FR4KY/ccaI57tnvPsSlMvSU5OBNCgQR0AGRlNAGRlNVGe6trtloiNV6/eCCAvbx+AgoJ9AA4dOgrg1Km/LEQrAYBkqodKonXo4vAtRiX7qvdFUZwb5aSpTl3pr8zOJ5NMygAgu3lKZF7d2YFToIGMkjNj4PyoN47N1InDh42eUvyLO0chNkqnhWwpDzo598fIFKheYepyUxD+/c8HK6cBuL3743x2z7v/LJg1of+gZzgHoYMkCdJ/lPexafUuB5DZsjGA7Izi97HdOt4c2mzVu5tC67kF+wDkF+4HUPTt97D6PlYP3v1HdIQff/R5anBfAAN6dUxOTp42Z4ny4IszFzHbAfUffQyPPxvefBHAbfc95Wg4whH4/rN99WwAbbo+rP20x8cfxwl8/9FHuqhSCzE70LJ3JgO4+66RnOOgDqSPjwagkeN7KCuTx61g1ebx/xVGPJKS0tJ+swalZ5FVJcmKfq6NrPObRwlJz6VL9VOOiIZy1Kq1VLoqQ7s8/kgoufjg0uVlVhSLJ0NPnTRi2KgcX0nPUsxfdLcEwPQWlhzjlzg7ML4lD7zeN3T58ZstAGpd0T7sUdUVtHrVZABdu8Z+F+qj9z+OwLX/nDyWD6BSjUyeQegjjACtz6mf8gAk18xye8e+Hn8Y4JfxZ/jgflNmLmTfLvUffQyPP/95ayqAW+8dFnfLTUtfBnBzrydsBSYIge8/n66ZA+C6Lg9pP+2X8ccpAt9/9CnDO4CY8JeeiYAxedyKkeN7WFafw6zQmU0BZGU1WbVqY3Z209q1a4Q2mzdvYmi9xAq9F/as0AFHGeTpD6FNJA/mMG7Aa5dMBtC5N/01KebGtq6LCNyJfBeoGjAYjh2hvchau2C1F4IgDKCoz8qK0Bq0F0iumbVw1gTeURAEwQcj0jPhP2JKz7H5/cAnAC5udAPzYPzNxsVTAdzSJ0AXmhAC9CefvQHghmvv5x0IEXTseJ8V7biw8ICy/OnY5wBq1rxm3ryJzZrdcfx4IRjZnwlNSIa2jxc1aCIuUyeNUFZubJuVkpKyZ8eqzVvzAEDCsNEv8ozMaaLN0VL4r0p3l5jW8lHvQv1dAhqhBCPS+xyFnveZEIDiwhH16yCqcISaha+ViqdhhSMOHwXd9ScIgmCET7zPBEE4jBACNEH4npSUlmrvs9OI/L16R2NTGvdFbWhX62+o9yr7SCpzxPvsZuUKCZAlSHLJ0sz2JVsPG5UTen7PjlXNWncL60g+QYr4P+zxWEdZ3NON5dZ6UColWh1JuFc6Z3L/ESMXOBAEQfgTRTsu2HUgtJy7YAWAd5e+uHXr1rZt20LwEhwEQQCO1N8gCMJ1yPtsDc95n3/btxXAJU3aWm7hAnbBWOeGa+8n+zPhM2rWuKZmjWucaDlu7eTAqs8u78UpQuKgrQka7e0fsFyfm1ltb9HwSt3k0v6jEeXmrXmeOZC4FB+jVKoyS6VPAFLxBJ4GiuU7ngpJHW34gwAg5UzuDwk5Of2dDEIU9u9YvX/Hat5RxMA3V4cBHhrQk3cIDlKpRuaqdRt5R8GHnR+9ufOjN3lHQRAEQRAEEQk5oAnCWZRCz+4g+CdmN8Pzj4lXxX+PfALgX3Wt33I0SEn2JMm16QQFRy1ICX2RBQAp7L/IOhuWb5vIrtSgiXRAFz8_V');
+      background-image: url('data:image/png;base64,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;
       background-size: cover; height: 60px; display: flex; align-items: center; padding: 0 24px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); z-index: 100;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
     }
     header.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
-    /* 3. 로고 및 네비게이션 스타일 */
+    /* 3. 로고 영역 스타일 */
     .logo-section { display: flex; align-items: center; gap: 10px; margin-right: 24px; cursor: pointer; }
     .logo-text { color: white; font-weight: 800; font-size: 14px; text-shadow: 0 0 10px rgba(28, 181, 224, 0.8); }
 
+    /* 4. 네비게이션 및 버튼 스타일 (home1.html 구성 반영) */
     .nav-area { display: flex; gap: 10px; flex: 1; align-items: center; overflow-x: auto; }
     .nav-btn {
       border: 1px solid rgba(28, 181, 224, 0.3); border-radius: 10px; color: #ffffff;
       background: rgba(255, 255, 255, 0.05); padding: 8px 14px; cursor: pointer;
       font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.3s;
+      display: flex; align-items: center; gap: 6px;
     }
     .nav-btn:hover, .nav-btn.active { background: rgba(28, 181, 224, 0.3); border-color: rgba(28, 181, 224, 0.8); }
 
-    /* 4. Han_AI 버튼 특별 스타일 (흰색+그레이 바탕, 네이비 글씨) */
+    .btn-icon { width: 14px; height: 14px; fill: currentColor; }
+
+    /* 5. Han_AI 전용 특별 스타일 (흰색+그레이 바탕, 네이비 글씨) */
     .btn-han-ai {
       background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%) !important;
       color: #000080 !important;
       border: 1px solid #ffffff !important;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
-    .btn-han-ai:hover {
-      background: #ffffff !important;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-      transform: scale(1.05);
-    }
+    .btn-han-ai:hover { background: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); transform: translateY(-2px); }
 
-    /* 5. 콘텐츠 영역 및 알림창 */
+    /* 6. 콘텐츠 영역 및 알림창 */
     .content-wrapper { flex: 1; background: #fff; z-index: 10; position: relative; }
     #content-frame { width: 100%; height: 100%; border: none; }
 
     #custom-alert { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
     .modal-content { background: #0a0e27; padding: 30px; border-radius: 12px; text-align: center; color: #fff; border: 1px solid #1CB5E0; }
     .modal-btn { background: #1CB5E0; color: #fff; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+
+    .stars { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+    .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); animation: twinkle 3s ease-in-out infinite; }
   </style>
 </head>
 <body oncontextmenu="return false">
@@ -74,13 +78,35 @@
       </div>
       
       <div class="nav-area">
-        <button class="nav-btn" onclick="goLink('new', 'https://gemini.google.com/share/b4ec0333e73c', this)">진행사항 ↗</button>
-        <button class="nav-btn" onclick="goLink('frame', 'https://script.google.com/macros/s/AKfycbzU6UBeYWfO9_SbvmyM69S6LTznRRgc4y5gNgXgP795_XaEDvOYnRYnby7T0U_5v-4bDQ/exec', this)">휴폐업조회</button>
-        <button class="nav-btn" onclick="goLink('frame', 'https://scourt.gensolsoft.com/', this)">대법원 사건검색</button>
-        <button id="btn-photo" class="nav-btn" onclick="goLink('frame', 'https://drive.google.com/embeddedfolderview?id=1LF7_GJj1xmGPkAGilQZKIQ0B0GnaWRJO#grid', this)">포토로그</button>
-        <button class="nav-btn" onclick="goLink('frame', 'https://tojidi-debug.github.io/doyaa3/index.html', this)">프롬프트 추천</button>
+        <button class="nav-btn" onclick="goLink('new', 'https://gemini.google.com/share/b4ec0333e73c', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          진행사항 ↗
+        </button>
         
-        <button class="nav-btn btn-han-ai" onclick="goFullScreen('https://tojidi-debug.github.io/doyaa/ai_index.html', this)">Han_AI</button>
+        <button class="nav-btn" onclick="goLink('frame', 'https://script.google.com/macros/s/AKfycbzU6UBeYWfO9_SbvmyM69S6LTznRRgc4y5gNgXgP795_XaEDvOYnRYnby7T0U_5v-4bDQ/exec', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          휴폐업조회
+        </button>
+        
+        <button class="nav-btn" onclick="goLink('frame', 'https://scourt.gensolsoft.com/', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+          대법원 사건검색
+        </button>
+        
+        <button id="btn-photo" class="nav-btn" onclick="goLink('frame', 'https://drive.google.com/embeddedfolderview?id=1LF7_GJj1xmGPkAGilQZKIQ0B0GnaWRJO#grid', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+          포토로그
+        </button>
+        
+        <button class="nav-btn" onclick="goLink('frame', 'https://tojidi-debug.github.io/doyaa3/index.html', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+          프롬프트 추천
+        </button>
+        
+        <button class="nav-btn btn-han-ai" onclick="goFullScreen('https://tojidi-debug.github.io/doyaa/ai_index.html', this)">
+          <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z"/></svg>
+          Han_AI
+        </button>
       </div>
     </header>
 
@@ -98,54 +124,62 @@
   </div>
 
   <script>
-    function resetPage() {
-      location.reload();
-    }
+    /* home1.html 기능 로직 적용 */
+    function resetPage() { location.reload(); }
 
     function showAlert(message) {
       document.getElementById('modal-text').innerText = message;
       document.getElementById('custom-alert').style.display = 'flex';
     }
 
-    function closeAlert() {
-      document.getElementById('custom-alert').style.display = 'none';
-    }
+    function closeAlert() { document.getElementById('custom-alert').style.display = 'none'; }
 
-    // 일반 페이지 전환 (헤더 보임)
+    // 일반 페이지 전환
     function goLink(type, url, el) {
       document.getElementById('main-header').classList.remove('hidden');
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       if(el) el.classList.add('active');
-
-      if (type === 'new') {
-        window.open(url, '_blank');
-      } else {
-        document.getElementById('content-frame').src = url;
-      }
+      if (type === 'new') { window.open(url, '_blank'); } 
+      else { document.getElementById('content-frame').src = url; }
     }
 
-    // [핵심] Han_AI 전용 전체 화면 전환 함수
+    // Han_AI 전용 전체 화면 전환
     function goFullScreen(url, el) {
-      // 1. 헤더 숨기기
       document.getElementById('main-header').classList.add('hidden');
-      // 2. 버튼 활성화 표시
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
-      // 3. Iframe 로드
       document.getElementById('content-frame').src = url;
     }
 
-    // 마우스 오른쪽 클릭 금지
+    // 보안: 우클릭 방지
     document.addEventListener('contextmenu', e => {
       e.preventDefault();
       showAlert('보안을 위해 우클릭이 제한됩니다.');
     });
 
     window.onload = function() {
-      // 첫 접속 시 '포토로그' 자동 클릭 (구글 드라이브 표시)
+      // 1. 첫 접속 시 '포토로그' 자동 로드
       const photoBtn = document.getElementById('btn-photo');
       if (photoBtn) photoBtn.click();
+      
+      // 2. 우주 효과 초기화
+      createStars();
     };
+
+    function createStars() {
+      const container = document.querySelector('.wrapper');
+      const starsContainer = document.createElement('div');
+      starsContainer.className = 'stars';
+      container.appendChild(starsContainer);
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
   </script>
 
 </body>
